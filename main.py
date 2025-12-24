@@ -23,6 +23,9 @@ def main():
         print("Controls:")
         print(" 'f' - Toggle Face Detection")
         print(" 'h' - Toggle Hand Tracking")
+        print(" 'p' - Toggle Pose Detection (Body)")
+        print(" 'c' - Toggle Finger Counting")
+        print(" 'g' - Toggle Gesture Control (Volume)")
         print(" 'n' - None (Clear)")
         print(" 'q' - Quit")
 
@@ -57,6 +60,15 @@ def main():
                 processor.set_mode('face')
             elif key == ord('h'):
                 processor.set_mode('hands')
+            elif key == ord('p'):
+                processor.set_mode('pose')
+                print("Pose Detection Mode: Full body tracking")
+            elif key == ord('c'):
+                processor.set_mode('count')
+                print("Finger Counting Mode: Show fingers to camera")
+            elif key == ord('g'):
+                processor.set_mode('gestures')
+                print("Gesture Control Mode: Rotate palm to control volume")
             elif key == ord('n'):
                 processor.set_mode('none')
 
