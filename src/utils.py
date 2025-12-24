@@ -231,3 +231,33 @@ def draw_finger_count(img, total_count, hand_details=None):
             draw_text_with_background(img, hand_text, (20, detail_y), 
                                      font_scale=0.7, text_color=(255, 255, 255))
             detail_y += 35
+
+
+def draw_air_writing_controls(img):
+    """Draw air writing mode controls and instructions.
+    
+    Args:
+        img: Image to draw on
+    """
+    instructions = [
+        "AIR WRITING MODE",
+        "Point index finger UP to draw",
+        "Fold middle finger DOWN while drawing",
+        "Press 'x' to clear canvas",
+        "Press 'r' for red, 'b' for blue, 'g' for green"
+    ]
+    
+    y_pos = 30
+    for i, text in enumerate(instructions):
+        if i == 0:
+            # Title
+            draw_text_with_background(img, text, (20, y_pos), 
+                                     font_scale=1.0, text_color=(0, 255, 255), 
+                                     bg_color=(0, 0, 0), thickness=2)
+            y_pos += 40
+        else:
+            # Instructions
+            draw_text_with_background(img, text, (20, y_pos), 
+                                     font_scale=0.6, text_color=(255, 255, 255), 
+                                     bg_color=(0, 0, 0))
+            y_pos += 30

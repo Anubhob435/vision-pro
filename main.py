@@ -25,9 +25,14 @@ def main():
         print(" 'h' - Toggle Hand Tracking")
         print(" 'p' - Toggle Pose Detection (Body)")
         print(" 'c' - Toggle Finger Counting")
+        print(" 'd' - Toggle Air Writing (Draw)")
         print(" 'g' - Toggle Gesture Control (Volume)")
         print(" 'n' - None (Clear)")
         print(" 'q' - Quit")
+        print("")
+        print("Air Writing Controls:")
+        print(" 'x' - Clear canvas")
+        print(" 'r' - Red, 'b' - Blue, 'g' - Green")
 
         while True:
             #Read Frame
@@ -66,11 +71,28 @@ def main():
             elif key == ord('c'):
                 processor.set_mode('count')
                 print("Finger Counting Mode: Show fingers to camera")
+            elif key == ord('d'):
+                processor.set_mode('draw')
+                print("Air Writing Mode: Point index finger to draw")
             elif key == ord('g'):
                 processor.set_mode('gestures')
                 print("Gesture Control Mode: Rotate palm to control volume")
             elif key == ord('n'):
                 processor.set_mode('none')
+            
+            # Air writing controls
+            elif key == ord('x'):
+                if processor.mode == 'draw':
+                    processor.air_writer.clear_canvas()
+                    print("Canvas cleared")
+            elif key == ord('r'):
+                if processor.mode == 'draw':
+                    processor.air_writer.change_color('red')
+                    print("Color: Red")
+            elif key == ord('b'):
+                if processor.mode == 'draw':
+                    processor.air_writer.change_color('blue')
+                    print("Color: Blue")
 
     except Exception as e:
         print(f"An error occurred: {e}")

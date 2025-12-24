@@ -4,7 +4,8 @@ import numpy as np
 from .gesture_recognizer import GestureRecognizer
 from .volume_controller import VolumeController
 from .finger_counter import FingerCounter
-from .utils import VolumeBarDrawer, draw_rotation_indicator, draw_gesture_status, draw_finger_count
+from .air_writer import AirWriter
+from .utils import VolumeBarDrawer, draw_rotation_indicator, draw_gesture_status, draw_finger_count, draw_air_writing_controls
 
 class VisionProcessor:
     def __init__(self, mode='none'):
@@ -44,6 +45,9 @@ class VisionProcessor:
         # Initialize finger counter
         self.finger_counter = FingerCounter()
         
+        # Initialize air writer
+        self.air_writer = AirWriter()
+        
         self.mode = mode
 
     def set_mode(self, mode):
@@ -57,7 +61,7 @@ class VisionProcessor:
         
         results = {}
 
-        if self.mode == 'hands' or self.mode == 'gestures' or self.mode == 'count':
+        if self.mode == 'hands' or self.mode == 'gestures' or self.mode == 'count' or self.mode == 'draw':
             results['hands'] = self.hands.process(image_rgb)
         elif self.mode == 'face':
             results['face'] = self.face_mesh.process(image_rgb)
@@ -123,6 +127,38 @@ class VisionProcessor:
             
             # Draw large finger count display
             draw_finger_count(image, total_fingers, hand_details)
+        
+        # Handle air writing mode
+        elif self.mode == 'draw' and results.get('hands') and results['hands'].multi_hand_landmarks:
+            # Use first detected hand
+            hand_landmarks = results['hands'].multi_hand_landmarks[0]
+            
+            # Detect drawing gesture
+            is_drawing, finger_pos = self.air_writer.detect_drawing_gesture(hand_landmarks)
+            
+            # Add point if drawing
+            if is_drawing:
+                self.air_writer.add_point(finger_pos)
+            else:
+                # Add None to break the line
+                self.air_writer.add_point(None)
+            
+            # Draw accumulated points
+            self.air_writer.draw_on_frame(image)
+            
+            # Draw cursor at finger tip
+            self.air_writer.draw_cursor(image, finger_pos, is_drawing)
+            
+            # Draw hand landmarks
+            self.mp_drawing.draw_landmarks(
+                image,
+                hand_landmarks,
+                self.mp_hands.HAND_CONNECTIONS,
+                self.mp_drawing_styles.get_default_hand_landmarks_style(),
+                self.mp_drawing_styles.get_default_hand_connections_style())
+            
+            # Draw instructions
+            draw_air_writing_controls(image)
         
         # Handle regular hand tracking mode
         elif self.mode == 'hands' and results.get('hands') and results['hands'].multi_hand_landmarks:
