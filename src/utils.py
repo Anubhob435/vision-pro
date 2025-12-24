@@ -180,7 +180,7 @@ def draw_finger_count(img, total_count, hand_details=None):
     
     # Draw large count in center
     count_text = str(total_count)
-    font = cv2.FONT_HERSHEY_BOLD
+    font = cv2.FONT_HERSHEY_DUPLEX  # Use DUPLEX instead of BOLD
     font_scale = 8.0
     thickness = 15
     
